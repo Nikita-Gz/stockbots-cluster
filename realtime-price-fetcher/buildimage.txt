@@ -1,0 +1,1 @@
+docker build . -t data6s/realtime-price-fetcher --build-arg root_password=$env:MONGODB_ROOT_PASSWORD_ENV

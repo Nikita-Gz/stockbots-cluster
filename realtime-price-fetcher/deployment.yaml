@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realtime-price-fetcher-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: realtime-price-fetcher-app
+  template:
+    metadata:
+      labels:
+        app: realtime-price-fetcher-app
+    spec:
+      containers:
+      - name: realtime-price-fetcher-container
+        image: data6s/realtime-price-fetcher:latest
+        command: ['python', '/app/main.py']
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "2000m"
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+      terminationGracePeriodSeconds: 2
