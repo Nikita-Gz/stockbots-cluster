@@ -5,10 +5,9 @@ import datetime
 import pymongo
 import os
 
-from companylist import get_tracked_companies_list
+from constants import get_tracked_companies_list, get_finnhub_api_key
 
-# todo: make this a k8s secret?
-finnhub_key = 'cd8nl0qad3i1cmedk0p0cd8nl0qad3i1cmedk0pg'
+finnhub_key = get_finnhub_api_key()
 tracked_companies = get_tracked_companies_list()
 
 mongo_client = pymongo.MongoClient("mongodb://mongodb/", username='root', password=os.getenv('MONGODB_ROOT_PASSWORD'))
