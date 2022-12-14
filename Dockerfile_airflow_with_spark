@@ -1,0 +1,13 @@
+FROM apache/airflow:2.4.2
+
+USER root
+
+RUN sudo apt update -y
+RUN sudo apt install openjdk-11-jdk -y
+
+USER airflow
+
+RUN pip install --no-cache-dir pyspark apache-airflow-providers-apache-spark
+
+ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+ENV PATH="${PATH}:${JAVA_HOME}/bin"

@@ -29,13 +29,14 @@ if __name__ == "__main__":
     spark = SparkSession\
         .builder\
         .appName("PythonPi")\
-        .config("spark.mongodb.output.uri", "mongodb://root:AUKr2OhZ4z7FS5nZC0lZ@127.0.0.1/test.coll")\
-        .config("spark.mongodb.input.uri", "mongodb://root:AUKr2OhZ4z7FS5nZC0lZ@127.0.0.1/test.coll")\
         .getOrCreate()
+        #.config("spark.mongodb.output.uri", "mongodb://root:AUKr2OhZ4z7FS5nZC0lZ@127.0.0.1/test.coll")\
+        #.config("spark.mongodb.input.uri", "mongodb://root:AUKr2OhZ4z7FS5nZC0lZ@127.0.0.1/test.coll")\
+        #.getOrCreate()
 
-    people = spark.createDataFrame([("Bilbo Baggins",  50), ("Gandalf", 1000), ("Thorin", 195), ("Balin", 178), ("Kili", 77),
-    ("Dwalin", 169), ("Oin", 167), ("Gloin", 158), ("Fili", 82), ("Bombur", None)], ["name", "age"])
-    people.write.format("mongo").mode("append").save()
+    #people = spark.createDataFrame([("Bilbo Baggins",  50), ("Gandalf", 1000), ("Thorin", 195), ("Balin", 178), ("Kili", 77),
+    #("Dwalin", 169), ("Oin", 167), ("Gloin", 158), ("Fili", 82), ("Bombur", None)], ["name", "age"])
+    #people.write.format("mongo").mode("append").save()
 
 
     partitions = int(sys.argv[1]) if len(sys.argv) > 1 else 2

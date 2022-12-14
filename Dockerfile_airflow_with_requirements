@@ -1,4 +1,4 @@
-FROM apache/airflow:2.4.2
+FROM data6s/airflow_with_spark:latest
 
 ARG root_password
 ENV MONGODB_ROOT_PASSWORD $root_password

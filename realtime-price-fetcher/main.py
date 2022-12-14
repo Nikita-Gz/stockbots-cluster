@@ -22,7 +22,8 @@ def unwind_temp_storage(storage):
       'company': company,
       'seconds_timestamp': seconds_timestamp,
       'price': price_data['price'],
-      'volume': price_data['volume']
+      'volume': price_data['volume'],
+      'push_count': price_data['push_count'],
     }
     all_records.append(full_record)
   print(f'Got {len(all_records)} records in temp storage')
@@ -43,8 +44,9 @@ def save_temp_storage_to_mongodb(storage):
 class WebhookDataHolder:
   def __init__(self):
     self.temporary_storage = dict()
-    self.seconds_to_keep_temp_storage = 5
+    self.seconds_to_keep_temp_storage = 30
     self.last_save_time = None
+    self.push_counter = 0
 
 webhook_data = WebhookDataHolder()
 
@@ -65,7 +67,7 @@ def on_message(ws, message):
       key = (company, seconds_timestamp)
       existing_volume = webhook_data.temporary_storage.get(key, dict()).get('volume', 0)
 
-      record_to_fill = {'price': price, 'volume': existing_volume + volume}
+      record_to_fill = {'price': price, 'volume': existing_volume + volume, 'push_count': webhook_data.push_counter}
       webhook_data.temporary_storage[(company, seconds_timestamp)] = record_to_fill
   else:
     print(f'Got message: {message_json}')
@@ -74,6 +76,7 @@ def on_message(ws, message):
   seconds_elapsed_since_last_save = (datetime.datetime.now() - webhook_data.last_save_time).seconds
   if seconds_elapsed_since_last_save >= webhook_data.seconds_to_keep_temp_storage:
     save_temp_storage_to_mongodb(webhook_data.temporary_storage)
+    webhook_data.push_counter += 1
     webhook_data.temporary_storage.clear()
     webhook_data.last_save_time = datetime.datetime.now()
 
@@ -85,6 +88,7 @@ def on_error(ws, error):
 def on_close(ws, a, b):
   print(a, b)
   print("### closed ###")
+  raise Exception('Connection was closed')
 
 
 def on_open(ws):

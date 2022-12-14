@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-local-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: spark-local-app
+  template:
+    metadata:
+      labels:
+        app: spark-local-app
+    spec:
+      containers:
+      - name: spark-local-container
+        image: data6s/spark_local:latest
+        #command: ["/opt/spark/bin/spark-submit", "/opt/spark/work-dir/main.py"]
+        #command: ["/opt/spark/bin/spark-submit"]
+        args: ["/opt/spark/bin/spark-submit", "/opt/spark/work-dir/main.py"]
+        #args: ["/opt/spark/bin/pyspark", "--packages", "org.mongodb.spark:mongo-spark-connector:10.0.5", "/opt/spark/work-dir/main.py"]
+        resources:
+          limits:
+            memory: "8000Mi"
+            cpu: "4000m"
+          requests:
+            memory: "2000Mi"
+            cpu: "500m"
+      terminationGracePeriodSeconds: 2

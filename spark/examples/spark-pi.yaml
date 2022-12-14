@@ -25,9 +25,9 @@ spec:
   type: Python
   pythonVersion: "3"
   mode: cluster
-  image: "gcr.io/spark-operator/spark-py:v3.1.1"
+  image: "data6s/fu"
   imagePullPolicy: Always
-  mainApplicationFile: local:///opt/spark/examples/src/main/python/pi.py
+  mainApplicationFile: local:///opt/spark/examples/src/main/python/pii.py
   sparkVersion: "3.1.1"
   restartPolicy:
     type: OnFailure
