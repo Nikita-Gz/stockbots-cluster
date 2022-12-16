@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow-tracking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow-tracking-app
+  template:
+    metadata:
+      labels:
+        app: mlflow-tracking-app
+    spec:
+      volumes:
+      - name: mlflow-pv-storage
+        persistentVolumeClaim:
+          claimName: mlflow-pv-claim
+      containers:
+      - name: mlflow
+        image: data6s/mlflow-server:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: ARTIFACT_ROOT
+          valueFrom:
+            configMapKeyRef:
+              name: mlflow-configmap
+              key: ARTIFACT_STORE
+        - name: BACKEND_STORE_URI
+          valueFrom:
+            configMapKeyRef:
+              name: mlflow-configmap
+              key: BACLKEND_STORE_URI
+        volumeMounts:
+        - mountPath: /mlflow
+          name: mlflow-pv-storage
+        resources:
+          limits:
+            memory: "8000Mi"
+            cpu: "2000m"
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+
