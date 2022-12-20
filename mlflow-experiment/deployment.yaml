@@ -1,50 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mlflow-tracking
+  name: mlflow-experiment-deployment
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
   selector:
     matchLabels:
-      app: mlflow-tracking-app
+      app: mlflow-experiment-app
   template:
     metadata:
       labels:
-        app: mlflow-tracking-app
+        app: mlflow-experiment-app
     spec:
       volumes:
-      - name: mlflow-backend-storage
-        persistentVolumeClaim:
-          claimName: mlflow-backend-pvc
       - name: mlflow-artifact-storage
         persistentVolumeClaim:
           claimName: mlflow-artifact-pvc
       containers:
-      - name: mlflow
-        image: data6s/mlflow-server:latest
-        ports:
-        - containerPort: 5000
+      - name: mlflow-experiment-container
+        image: data6s/mlflow-experiment:latest
+        command: ['python', '/app/main.py']
         env:
         - name: ARTIFACT_ROOT
           valueFrom:
             configMapKeyRef:
               name: mlflow-configmap
               key: ARTIFACT_STORE
-        - name: BACKEND_STORE_URI
-          valueFrom:
-            configMapKeyRef:
-              name: mlflow-configmap
-              key: BACLKEND_STORE_URI
         volumeMounts:
-        - mountPath: /mlflow/backend/
-          name: mlflow-backend-storage
         - mountPath: /mlflow/artifacts/
           name: mlflow-artifact-storage
         resources:
           limits:
-            memory: "8000Mi"
-            cpu: "2000m"
+            memory: "1024Mi"
+            cpu: "1000m"
           requests:
-            memory: "500Mi"
+            memory: "128Mi"
             cpu: "500m"
-
+      terminationGracePeriodSeconds: 2

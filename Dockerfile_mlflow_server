@@ -1,12 +1,11 @@
 FROM python:3.10.9
 
 RUN pip install mlflow
-RUN mkdir /mlflow
+RUN mkdir -p /mlflow/backend/
+RUN mkdir -p /mlflow/artifacts/
 
-ENTRYPOINT  mkdir -p $ARTIFACT_ROOT && \
-            mkdir -p $BACKEND_STORE_URI && \
-            \
-            mlflow server \
+ENTRYPOINT  mlflow server \
             --backend-store-uri $BACKEND_STORE_URI \
             --default-artifact-root $ARTIFACT_ROOT \
+            --artifacts-destination $ARTIFACT_ROOT \
             --host 0.0.0.0

@@ -4,5 +4,5 @@ metadata:
   name: mlflow-configmap
 data:
   # Artifacts will be stored locally in the pod, same goes for backend storage
-  ARTIFACT_STORE: /mlflow/artifacts
-  BACLKEND_STORE_URI: sqlite:///mlflow/db/db.db
+  ARTIFACT_STORE: /mlflow/artifacts/
+  BACLKEND_STORE_URI: sqlite:///mlflow/backend/db.db

@@ -1,0 +1,7 @@
+FROM python:3.8.16
+
+WORKDIR /app
+COPY ./mlflow-experiment .
+COPY ./constants.py .
+RUN mkdir -p /mlflow/artifacts/
+RUN pip install mlflow-skinny --no-cache-dir

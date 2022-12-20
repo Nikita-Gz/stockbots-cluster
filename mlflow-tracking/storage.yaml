@@ -1,0 +1,55 @@
+# defines PersistentVolumes and PersistentVolumeClaims for storing experiments and artifacts
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mlflow-backend-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 25Gi
+  accessModes:
+  - ReadWriteMany
+  hostPath:
+    path: "/mnt/mflow-backend"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mlflow-backend-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 25Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mlflow-artifact-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Gi
+  accessModes:
+  - ReadWriteMany
+  hostPath:
+    path: "/mnt/mflow-artifacts"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mlflow-artifact-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
