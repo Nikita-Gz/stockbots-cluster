@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daily-prediction-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: daily-prediction-app
+  template:
+    metadata:
+      labels:
+        app: daily-prediction-app
+    spec:
+      volumes:
+      - name: mlflow-artifact-storage
+        persistentVolumeClaim:
+          claimName: mlflow-artifact-pvc
+      containers:
+      - name: daily-prediction-container
+        image: data6s/daily-prediction-experiments:latest
+        command: ['python', '/app/main.py']
+        env:
+        - name: ARTIFACT_ROOT
+          valueFrom:
+            configMapKeyRef:
+              name: mlflow-configmap
+              key: ARTIFACT_STORE
+        volumeMounts:
+        - mountPath: /mlflow/artifacts/
+          name: mlflow-artifact-storage
+        resources:
+          limits:
+            memory: "4096Mi"
+            cpu: "4000m"
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+      terminationGracePeriodSeconds: 2
