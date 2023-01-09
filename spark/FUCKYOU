@@ -1,6 +1,0 @@
-FROM gcr.io/spark-operator/spark-py:v3.1.1
-
-USER 0
-RUN pip3 install pymongo
-COPY ./pi.py /opt/spark/examples/src/main/python/pii.py
-USER 185
